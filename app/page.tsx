@@ -23,13 +23,11 @@ const [results, setResults] = useState<any[]>([])
       setResults([])
       return
     }
-    const q = query.toLowerCase()
-    const matches = coins.filter(coin =>
-      coin.name.toLowerCase().includes(q) ||
-      coin.country.toLowerCase().includes(q) ||
-      coin.years.toLowerCase().includes(q) ||
-      coin.denomination.toLowerCase().includes(q)
-    )
+ const words = query.toLowerCase().split(' ').filter(w => w.length > 0)
+const matches = coins.filter(coin => {
+  const searchText = `${coin.name} ${coin.country} ${coin.years} ${coin.denomination}`.toLowerCase()
+  return words.every(word => searchText.includes(word))
+})
     setResults(matches.slice(0, 6))
   }, [query])
 
