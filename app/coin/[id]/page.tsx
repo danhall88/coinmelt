@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { coins } from '@/app/data/coins'
+import { coins } from '../../data/coins'
 
 export default function CoinPage() {
   const params = useParams()
@@ -39,7 +39,6 @@ export default function CoinPage() {
         <h1 className="text-3xl font-bold text-white mb-1">{coin.name}</h1>
         <p className="text-gray-500 mb-8">{coin.years} · {coin.denomination}</p>
 
-        {/* Melt Value */}
         <div className="bg-gray-800 rounded-2xl p-6 mb-4">
           <p className="text-gray-400 text-sm mb-1">Melt Value</p>
           <p className="text-yellow-400 text-5xl font-bold">
@@ -52,7 +51,6 @@ export default function CoinPage() {
           )}
         </div>
 
-        {/* Metal Composition */}
         <div className="bg-gray-800 rounded-2xl p-6 mb-4">
           <p className="text-gray-400 text-sm mb-3">Metal Content</p>
           {Object.entries(coin.composition).map(([metal, oz]) => (
@@ -63,7 +61,6 @@ export default function CoinPage() {
           ))}
         </div>
 
-        {/* Alloy Breakdown */}
         {coin.alloy && Object.keys(coin.alloy).length > 0 && (
           <div className="bg-gray-800 rounded-2xl p-6 mb-4">
             <p className="text-gray-400 text-sm mb-3">Alloy Composition</p>
@@ -84,7 +81,6 @@ export default function CoinPage() {
           </div>
         )}
 
-        {/* Physical Specs */}
         {(coin.weight > 0 || coin.diameter > 0) && (
           <div className="bg-gray-800 rounded-2xl p-6">
             <p className="text-gray-400 text-sm mb-3">Physical Specifications</p>
