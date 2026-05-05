@@ -1,65 +1,104 @@
-import Image from "next/image";
+'use client'
+
+import { useState, useEffect } from 'react'
+import { coins } from './data/coins'
 
 export default function Home() {
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState([])
+  const [prices, setPrices] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/metals')
+      .then(res => res.json())
+      .then(data => {
+        setPrices(data)
+        setLoading(false)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (query.length < 2) {
+      setResults([])
+      return
+    }
+    const q = query.toLowerCase()
+    const matches = coins.filter(coin =>
+      coin.name.toLowerCase().includes(q) ||
+      coin.country.toLowerCase().includes(q) ||
+      coin.years.toLowerCase().includes(q) ||
+      coin.denomination.toLowerCase().includes(q)
+    )
+    setResults(matches.slice(0, 6))
+  }, [query])
+
+  function getMeltValue(coin) {
+    if (!prices) return null
+    let value = 0
+    if (coin.composition.silver) value += coin.composition.silver * prices.silver
+    if (coin.composition.gold) value += coin.composition.gold * prices.gold
+    return value.toFixed(2)
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="min-h-screen bg-gray-950 text-white flex flex-col items-center px-4 py-16">
+      <h1 className="text-4xl font-bold text-yellow-400 mb-2">CoinMelt</h1>
+      <p className="text-gray-400 mb-2 text-lg">Instant coin melt value calculator</p>
+
+      {loading ? (
+        <p className="text-gray-600 text-sm mb-8">Loading live metal prices...</p>
+      ) : (
+        <p className="text-gray-600 text-sm mb-8">
+          Gold: ${prices.gold.toFixed(2)}/oz · Silver: ${prices.silver.toFixed(2)}/oz
+        </p>
+      )}
+
+      <div className="w-full max-w-xl">
+        <input
+          type="text"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder="Search any coin — country, name, or year..."
+          className="w-full px-5 py-4 rounded-xl bg-gray-800 text-white placeholder-gray-500 text-lg outline-none focus:ring-2 focus:ring-yellow-400"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+
+        {results.length > 0 && (
+          <div className="mt-3 flex flex-col gap-3">
+            {results.map(coin => (
+              <div key={coin.id} className="bg-gray-800 rounded-xl px-5 py-4 flex justify-between items-center">
+                <div>
+                  <p className="font-semibold text-white">{coin.name}</p>
+                  <p className="text-gray-400 text-sm">{coin.country} · {coin.years} · {coin.denomination}</p>
+                  <p className="text-gray-500 text-xs mt-1">
+                    {Object.entries(coin.composition).map(([metal, oz]) =>
+                      `${oz} oz ${metal}`
+                    ).join(' · ')}
+                  </p>
+                </div>
+                <div className="text-right">
+                  {getMeltValue(coin) ? (
+                    <>
+                      <p className="text-yellow-400 font-bold text-xl">${getMeltValue(coin)}</p>
+                      <p className="text-gray-500 text-xs">melt value</p>
+                    </>
+                  ) : (
+                    <p className="text-gray-600 text-sm">loading...</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {query.length >= 2 && results.length === 0 && (
+          <p className="text-gray-600 text-sm mt-4 text-center">No coins found — try another search</p>
+        )}
+
+        {query.length === 0 && (
+          <p className="mt-4 text-gray-600 text-sm text-center">Try: "Morgan" or "Mexico" or "1964"</p>
+        )}
+      </div>
+    </main>
+  )
 }
