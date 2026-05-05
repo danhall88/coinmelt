@@ -33,7 +33,7 @@ const [results, setResults] = useState<any[]>([])
     setResults(matches.slice(0, 6))
   }, [query])
 
-  function getMeltValue(coin) {
+function getMeltValue(coin: any) {
     if (!prices) return null
     let value = 0
     if (coin.composition.silver) value += coin.composition.silver * prices.silver
