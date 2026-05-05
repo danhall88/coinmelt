@@ -48,8 +48,8 @@ function getMeltValue(coin: any) {
         <p className="text-gray-600 text-sm mb-8">Loading live metal prices...</p>
       ) : (
         <p className="text-gray-600 text-sm mb-8">
-          Gold: ${prices.gold.toFixed(2)}/oz · Silver: ${prices.silver.toFixed(2)}/oz
-        </p>
+  Gold: ${prices.gold.toFixed(2)}/oz · Silver: ${prices.silver.toFixed(2)}/oz · Updated: {new Date(prices.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+</p>
       )}
 
       <div className="w-full max-w-xl">
