@@ -25,7 +25,7 @@ export default function Home() {
     }
     const words = query.toLowerCase().split(' ').filter(w => w.length > 0)
 const matches = coins.filter(coin => {
-  const searchText = `${coin.name} ${coin.country} ${coin.years} ${coin.denomination}`.toLowerCase()
+  const searchText = `${coin.name} ${coin.country} ${coin.years} ${coin.denomination} ${(coin.keywords || []).join(' ')}`.toLowerCase()
   return words.every(word => {
     if (searchText.includes(word)) return true
     // Check if word is a year that falls within the coin's year range

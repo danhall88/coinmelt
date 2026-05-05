@@ -39,7 +39,8 @@ export default function CoinPage() {
         <h1 className="text-3xl font-bold text-white mb-1">{coin.name}</h1>
         <p className="text-gray-500 mb-8">{coin.years} · {coin.denomination}</p>
 
-        <div className="bg-gray-800 rounded-2xl p-6 mb-6">
+        {/* Melt Value */}
+        <div className="bg-gray-800 rounded-2xl p-6 mb-4">
           <p className="text-gray-400 text-sm mb-1">Melt Value</p>
           <p className="text-yellow-400 text-5xl font-bold">
             {getMeltValue() ? `$${getMeltValue()}` : 'Loading...'}
@@ -51,8 +52,9 @@ export default function CoinPage() {
           )}
         </div>
 
-        <div className="bg-gray-800 rounded-2xl p-6">
-          <p className="text-gray-400 text-sm mb-3">Metal Composition</p>
+        {/* Metal Composition */}
+        <div className="bg-gray-800 rounded-2xl p-6 mb-4">
+          <p className="text-gray-400 text-sm mb-3">Metal Content</p>
           {Object.entries(coin.composition).map(([metal, oz]) => (
             <div key={metal} className="flex justify-between items-center py-2 border-b border-gray-700 last:border-0">
               <span className="capitalize text-white">{metal}</span>
@@ -60,6 +62,46 @@ export default function CoinPage() {
             </div>
           ))}
         </div>
+
+        {/* Alloy Breakdown */}
+        {coin.alloy && Object.keys(coin.alloy).length > 0 && (
+          <div className="bg-gray-800 rounded-2xl p-6 mb-4">
+            <p className="text-gray-400 text-sm mb-3">Alloy Composition</p>
+            {Object.entries(coin.alloy).map(([metal, pct]) => (
+              <div key={metal} className="flex justify-between items-center py-2 border-b border-gray-700 last:border-0">
+                <span className="capitalize text-white">{metal}</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-24 bg-gray-700 rounded-full h-1.5">
+                    <div
+                      className="bg-yellow-400 h-1.5 rounded-full"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <span className="text-gray-300 w-12 text-right">{pct as number}%</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Physical Specs */}
+        {(coin.weight > 0 || coin.diameter > 0) && (
+          <div className="bg-gray-800 rounded-2xl p-6">
+            <p className="text-gray-400 text-sm mb-3">Physical Specifications</p>
+            {coin.weight > 0 && (
+              <div className="flex justify-between items-center py-2 border-b border-gray-700">
+                <span className="text-white">Weight</span>
+                <span className="text-gray-300">{coin.weight} g</span>
+              </div>
+            )}
+            {coin.diameter > 0 && (
+              <div className="flex justify-between items-center py-2">
+                <span className="text-white">Diameter</span>
+                <span className="text-gray-300">{coin.diameter} mm</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </main>
   )
