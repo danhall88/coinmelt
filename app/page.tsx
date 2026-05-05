@@ -5,7 +5,7 @@ import { coins } from './data/coins'
 
 export default function Home() {
   const [query, setQuery] = useState('')
-const [results, setResults] = useState<any[]>([])
+  const [results, setResults] = useState<any[]>([])
   const [prices, setPrices] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -23,15 +23,26 @@ const [results, setResults] = useState<any[]>([])
       setResults([])
       return
     }
- const words = query.toLowerCase().split(' ').filter(w => w.length > 0)
+    const words = query.toLowerCase().split(' ').filter(w => w.length > 0)
 const matches = coins.filter(coin => {
   const searchText = `${coin.name} ${coin.country} ${coin.years} ${coin.denomination}`.toLowerCase()
-  return words.every(word => searchText.includes(word))
+  return words.every(word => {
+    if (searchText.includes(word)) return true
+    // Check if word is a year that falls within the coin's year range
+    const yearMatch = coin.years.match(/(\d{4})\s*[-–]\s*(\d{4}|present)/)
+    if (yearMatch && /^\d{4}$/.test(word)) {
+      const searchYear = parseInt(word)
+      const startYear = parseInt(yearMatch[1])
+      const endYear = yearMatch[2] === 'present' ? new Date().getFullYear() : parseInt(yearMatch[2])
+      return searchYear >= startYear && searchYear <= endYear
+    }
+    return false
+  })
 })
     setResults(matches.slice(0, 6))
   }, [query])
 
-function getMeltValue(coin: any) {
+  function getMeltValue(coin: any) {
     if (!prices) return null
     let value = 0
     if (coin.composition.silver) value += coin.composition.silver * prices.silver
@@ -48,8 +59,8 @@ function getMeltValue(coin: any) {
         <p className="text-gray-600 text-sm mb-8">Loading live metal prices...</p>
       ) : (
         <p className="text-gray-600 text-sm mb-8">
-  Gold: ${prices.gold.toFixed(2)}/oz · Silver: ${prices.silver.toFixed(2)}/oz · Updated: {new Date(prices.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-</p>
+          Gold: ${prices.gold.toFixed(2)}/oz · Silver: ${prices.silver.toFixed(2)}/oz · Updated: {new Date(prices.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </p>
       )}
 
       <div className="w-full max-w-xl">
@@ -64,7 +75,7 @@ function getMeltValue(coin: any) {
         {results.length > 0 && (
           <div className="mt-3 flex flex-col gap-3">
             {results.map(coin => (
-              <div key={coin.id} className="bg-gray-800 rounded-xl px-5 py-4 flex justify-between items-center">
+              <a href={`/coin/${coin.id}`} key={coin.id} className="bg-gray-800 rounded-xl px-5 py-4 flex justify-between items-center hover:bg-gray-700 transition-colors cursor-pointer">
                 <div>
                   <p className="font-semibold text-white">{coin.name}</p>
                   <p className="text-gray-400 text-sm">{coin.country} · {coin.years} · {coin.denomination}</p>
@@ -84,7 +95,7 @@ function getMeltValue(coin: any) {
                     <p className="text-gray-600 text-sm">loading...</p>
                   )}
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         )}

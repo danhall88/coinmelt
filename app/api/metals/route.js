@@ -1,8 +1,19 @@
+const DEV_PRICES = {
+  gold: 4541.85,
+  silver: 72.91,
+  timestamp: new Date().toISOString(),
+  cached: true
+}
+
 let cachedPrices = null
 let lastFetched = null
 const CACHE_DURATION = 8 * 60 * 60 * 1000 // 8 hours = 3 calls per day
 
 export async function GET() {
+  if (process.env.NODE_ENV === 'development') {
+    return Response.json(DEV_PRICES)
+  }
+
   try {
     const now = Date.now()
 
