@@ -5,7 +5,7 @@ import { coins } from './data/coins'
 
 export default function Home() {
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
+const [results, setResults] = useState<any[]>([])
   const [prices, setPrices] = useState(null)
   const [loading, setLoading] = useState(true)
 
