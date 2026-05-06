@@ -17,9 +17,9 @@ export default function CoinPage() {
   }, [])
 
   if (!coin) return (
-    <main className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
-      <p className="text-gray-400">Coin not found</p>
-    </main>
+    <div style={{ minHeight: '100vh', backgroundColor: '#0A0A0F', color: '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, sans-serif' }}>
+      <p style={{ color: '#94A3B8' }}>Coin not found</p>
+    </div>
   )
 
   function getMeltValue() {
@@ -30,75 +30,119 @@ export default function CoinPage() {
     return value.toFixed(2)
   }
 
+  const primaryMetal = coin.composition.gold ? 'gold' : 'silver'
+  const accentColor = primaryMetal === 'gold' ? '#F59E0B' : '#94A3B8'
+
   return (
-    <main className="min-h-screen bg-gray-950 text-white flex flex-col items-center px-4 py-16">
-      <a href="/" className="text-yellow-400 text-sm mb-8 hover:underline">← Back to search</a>
+    <div style={{ minHeight: '100vh', backgroundColor: '#0A0A0F', color: '#E2E8F0', fontFamily: 'system-ui, sans-serif' }}>
 
-      <div className="w-full max-w-xl">
-        <p className="text-gray-400 text-sm mb-1">{coin.country}</p>
-        <h1 className="text-3xl font-bold text-white mb-1">{coin.name}</h1>
-        <p className="text-gray-500 mb-8">{coin.years} · {coin.denomination}</p>
-
-        <div className="bg-gray-800 rounded-2xl p-6 mb-4">
-          <p className="text-gray-400 text-sm mb-1">Melt Value</p>
-          <p className="text-yellow-400 text-5xl font-bold">
-            {getMeltValue() ? `$${getMeltValue()}` : 'Loading...'}
-          </p>
+      {/* Header */}
+      <header style={{ borderBottom: '1px solid #1E1E2E', padding: '0 24px' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '56px' }}>
+          <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #FCD34D, #D97706)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 'bold', color: '#1a1000', boxShadow: '0 0 10px rgba(245,158,11,0.4)' }}>CM</div>
+            <span style={{ fontSize: '17px', fontWeight: '600', color: '#F59E0B' }}>CoinMelt</span>
+          </a>
           {prices && (
-            <p className="text-gray-600 text-xs mt-2">
-              Gold: ${prices.gold.toFixed(2)}/oz · Silver: ${prices.silver.toFixed(2)}/oz
-            </p>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '10px', color: '#94A3B8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Gold</div>
+                <div style={{ fontSize: '13px', color: '#F59E0B', fontWeight: '600' }}>${prices.gold.toFixed(2)}</div>
+              </div>
+              <div style={{ width: '1px', backgroundColor: '#1E1E2E' }} />
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '10px', color: '#94A3B8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Silver</div>
+                <div style={{ fontSize: '13px', color: '#94A3B8', fontWeight: '600' }}>${prices.silver.toFixed(2)}</div>
+              </div>
+            </div>
           )}
         </div>
+      </header>
 
-        <div className="bg-gray-800 rounded-2xl p-6 mb-4">
-          <p className="text-gray-400 text-sm mb-3">Metal Content</p>
-          {Object.entries(coin.composition).map(([metal, oz]) => (
-            <div key={metal} className="flex justify-between items-center py-2 border-b border-gray-700 last:border-0">
-              <span className="capitalize text-white">{metal}</span>
-              <span className="text-gray-300">{oz as number} troy oz</span>
+      <main style={{ maxWidth: '600px', margin: '0 auto', padding: '20px 16px' }}>
+
+        <a href="/" style={{ fontSize: '12px', color: '#94A3B8', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', marginBottom: '16px' }}>← Back</a>
+
+        {/* Coin Header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
+          <div style={{
+            width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
+            background: primaryMetal === 'gold'
+              ? 'radial-gradient(circle at 35% 35%, #FCD34D, #92400E)'
+              : 'radial-gradient(circle at 35% 35%, #E2E8F0, #475569)',
+            boxShadow: primaryMetal === 'gold' ? '0 0 16px rgba(245,158,11,0.4)' : '0 0 16px rgba(148,163,184,0.3)',
+          }} />
+          <div>
+            <p style={{ fontSize: '11px', color: '#94A3B8', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{coin.country}</p>
+            <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#F1F5F9', margin: '0 0 2px', lineHeight: '1.2' }}>{coin.name}</h1>
+            <p style={{ fontSize: '12px', color: '#94A3B8', margin: 0 }}>{coin.years} · {coin.denomination}</p>
+          </div>
+        </div>
+
+        {/* Melt Value */}
+        <div style={{ backgroundColor: '#111118', border: `1px solid ${accentColor}40`, borderRadius: '12px', padding: '18px', marginBottom: '8px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)` }} />
+          <p style={{ fontSize: '10px', color: '#94A3B8', margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Melt Value</p>
+          <p style={{ fontSize: '40px', fontWeight: '700', color: accentColor, margin: '0 0 6px', lineHeight: 1 }}>
+            {getMeltValue() && parseFloat(getMeltValue()!) > 0 ? `$${getMeltValue()}` : 'Loading...'}
+          </p>
+        </div>
+
+        {/* Metal Content */}
+        <div style={{ backgroundColor: '#111118', border: '1px solid #1E1E2E', borderRadius: '12px', padding: '16px', marginBottom: '8px' }}>
+          <p style={{ fontSize: '10px', color: '#94A3B8', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Metal Content</p>
+          {Object.entries(coin.composition).filter(([, oz]) => (oz as number) > 0).map(([metal, oz], i, arr) => (
+            <div key={metal} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: i < arr.length - 1 ? '1px solid #1E1E2E' : 'none' }}>
+              <span style={{ fontSize: '14px', color: '#E2E8F0', textTransform: 'capitalize' }}>{metal}</span>
+              <span style={{ fontSize: '14px', color: '#CBD5E1' }}>{oz as number} troy oz</span>
             </div>
           ))}
         </div>
 
+        {/* Alloy */}
         {coin.alloy && Object.keys(coin.alloy).length > 0 && (
-          <div className="bg-gray-800 rounded-2xl p-6 mb-4">
-            <p className="text-gray-400 text-sm mb-3">Alloy Composition</p>
-            {Object.entries(coin.alloy).map(([metal, pct]) => (
-              <div key={metal} className="flex justify-between items-center py-2 border-b border-gray-700 last:border-0">
-                <span className="capitalize text-white">{metal}</span>
-                <div className="flex items-center gap-3">
-                  <div className="w-24 bg-gray-700 rounded-full h-1.5">
-                    <div
-                      className="bg-yellow-400 h-1.5 rounded-full"
-                      style={{ width: `${pct}%` }}
-                    />
+          <div style={{ backgroundColor: '#111118', border: '1px solid #1E1E2E', borderRadius: '12px', padding: '16px', marginBottom: '8px' }}>
+            <p style={{ fontSize: '10px', color: '#94A3B8', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Alloy Composition</p>
+            {Object.entries(coin.alloy).map(([metal, pct], i, arr) => (
+              <div key={metal} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: i < arr.length - 1 ? '1px solid #1E1E2E' : 'none' }}>
+                <span style={{ fontSize: '14px', color: '#E2E8F0', textTransform: 'capitalize' }}>{metal}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '70px', height: '3px', backgroundColor: '#1E1E2E', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div style={{ width: `${pct}%`, height: '100%', backgroundColor: accentColor, borderRadius: '2px' }} />
                   </div>
-                  <span className="text-gray-300 w-12 text-right">{pct as number}%</span>
+                  <span style={{ fontSize: '14px', color: '#CBD5E1', width: '38px', textAlign: 'right' }}>{pct as number}%</span>
                 </div>
               </div>
             ))}
           </div>
         )}
 
+        {/* Specs */}
         {(coin.weight > 0 || coin.diameter > 0) && (
-          <div className="bg-gray-800 rounded-2xl p-6">
-            <p className="text-gray-400 text-sm mb-3">Physical Specifications</p>
+          <div style={{ backgroundColor: '#111118', border: '1px solid #1E1E2E', borderRadius: '12px', padding: '16px' }}>
+            <p style={{ fontSize: '10px', color: '#94A3B8', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Specifications</p>
             {coin.weight > 0 && (
-              <div className="flex justify-between items-center py-2 border-b border-gray-700">
-                <span className="text-white">Weight</span>
-                <span className="text-gray-300">{coin.weight} g</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: coin.diameter > 0 ? '1px solid #1E1E2E' : 'none' }}>
+                <span style={{ fontSize: '14px', color: '#E2E8F0' }}>Weight</span>
+                <span style={{ fontSize: '14px', color: '#CBD5E1' }}>{coin.weight} g</span>
               </div>
             )}
             {coin.diameter > 0 && (
-              <div className="flex justify-between items-center py-2">
-                <span className="text-white">Diameter</span>
-                <span className="text-gray-300">{coin.diameter} mm</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0' }}>
+                <span style={{ fontSize: '14px', color: '#E2E8F0' }}>Diameter</span>
+                <span style={{ fontSize: '14px', color: '#CBD5E1' }}>{coin.diameter} mm</span>
               </div>
             )}
           </div>
         )}
-      </div>
-    </main>
+      </main>
+
+      <footer style={{ borderTop: '1px solid #1E1E2E', padding: '16px 24px', marginTop: '32px' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+          <span style={{ fontSize: '11px', color: '#64748B' }}>© 2026 CoinMelt · Prices updated every 12 hours</span>
+          <a href="/privacy" style={{ fontSize: '11px', color: '#64748B', textDecoration: 'none' }}>Privacy Policy</a>
+        </div>
+      </footer>
+    </div>
   )
 }
