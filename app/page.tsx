@@ -232,9 +232,8 @@ useEffect(() => {
       <footer style={{ borderTop: '1px solid #1E1E2E', marginTop: '64px', padding: '16px 24px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
           <span style={{ fontSize: '11px', color: '#334155' }}>© 2026 CoinMelt · Prices updated every 12 hours</span>
-          <a href="/privacy" style={{ fontSize: '11px', color: '#334151', textDecoration: 'none' }}>Privacy Policy</a>
         </div>
-      </footer>
+      </footer> 
 
     </div>
   )

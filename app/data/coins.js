@@ -28,17 +28,6 @@ export const coins = [
     alloy: { silver: 90, copper: 10 },
   },
   {
-    id: "us-eisenhower-dollar",
-    name: "Eisenhower Dollar (Clad)",
-    country: "United States",
-    years: "1971-1978",
-    denomination: "$1",
-    weight: 22.68,
-    diameter: 38.1,
-    composition: {},
-    alloy: { copper: 75, nickel: 25 },
-  },
-  {
     id: "us-kennedy-half-dollar-silver",
     name: "Kennedy Half Dollar (90% Silver)",
     country: "United States",
@@ -9218,18 +9207,6 @@ export const coins = [
   // ==================== 2 OZ SILVER COINS ====================
 
   {
-    id: "mexico-onza-libertad-2oz",
-    name: "Mexican Silver Libertad (2 oz)",
-    country: "Mexico",
-    years: "2019-present",
-    denomination: "2 Onzas",
-    weight: 62.207,
-    diameter: 48.0,
-    composition: { silver: 2.0 },
-    alloy: { silver: 99.9 },
-    keywords: ["dos onzas", "2 onzas", "libertad", "estados unidos mexicanos", "plata pura", "winged victory", "victoria alada"],
-  },
-  {
     id: "australia-2oz-silver-kookaburra",
     name: "Silver Kookaburra (2 oz)",
     country: "Australia",
@@ -9340,18 +9317,6 @@ export const coins = [
 
   // ==================== 5 OZ SILVER (NON-ATB) ====================
 
-  {
-    id: "mexico-onza-libertad-5oz",
-    name: "Mexican Silver Libertad (5 oz)",
-    country: "Mexico",
-    years: "2008-present",
-    denomination: "5 Onzas",
-    weight: 155.517,
-    diameter: 65.0,
-    composition: { silver: 5.0 },
-    alloy: { silver: 99.9 },
-    keywords: ["cinco onzas", "5 onzas", "libertad", "estados unidos mexicanos", "plata pura", "winged victory", "victoria alada"],
-  },
   {
     id: "australia-5oz-silver-kookaburra",
     name: "Silver Kookaburra (5 oz)",
@@ -9518,18 +9483,30 @@ export const coins = [
 
   // ==================== US CLAD COMMEMORATIVE HALF DOLLARS ====================
 
-  {
-    id: "us-washington-half-1982",
-    name: "Washington Half Dollar Commemorative (Clad)",
-    country: "United States",
-    years: "1982",
-    denomination: "$0.50",
-    weight: 12.50,
-    diameter: 30.6,
-    composition: {},
-    alloy: { copper: 75, nickel: 25 },
-    keywords: ["washington", "half dollar", "1982", "commemorative", "clad", "no silver", "george washington", "250th birthday"],
-  },
+ {
+  id: "us-washington-half-1982-d",
+  name: "Washington Half Dollar Commemorative (Clad - 1982-D)",
+  country: "United States",
+  years: "1982",
+  denomination: "$0.50",
+  weight: 12.50,
+  diameter: 30.6,
+  composition: {},
+  alloy: { copper: 75, nickel: 25 },
+  keywords: ["washington", "half dollar", "1982", "1982-d", "commemorative", "clad", "no silver", "george washington", "250th birthday", "denver"],
+},
+{
+  id: "us-washington-half-1982-s",
+  name: "Washington Half Dollar Commemorative (90% Silver - 1982-S)",
+  country: "United States",
+  years: "1982",
+  denomination: "$0.50",
+  weight: 12.50,
+  diameter: 30.6,
+  composition: { silver: 0.36169 },
+  alloy: { silver: 90, copper: 10 },
+  keywords: ["washington", "half dollar", "1982", "1982-s", "commemorative", "silver", "proof", "george washington", "250th birthday", "san francisco"],
+},
   {
     id: "us-statue-liberty-half-1986",
     name: "Statue of Liberty Half Dollar (Clad)",

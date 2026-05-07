@@ -4,6 +4,92 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { coins } from '../../data/coins'
 
+function ReportError({ coinName }: { coinName: string }) {
+  const [open, setOpen] = useState(false)
+  const [message, setMessage] = useState('')
+  const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+
+  async function handleSubmit() {
+    if (!message.trim()) return
+    setSending(true)
+    try {
+      await fetch('https://formspree.io/f/xqenboyd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ coin: coinName, message }),
+      })
+      setSent(true)
+    } catch {
+      setSent(true)
+    }
+    setSending(false)
+  }
+
+  if (sent) return (
+    <div style={{ marginTop: '24px', textAlign: 'center' }}>
+      <p style={{ fontSize: '13px', color: '#94A3B8' }}>Thanks — we'll review and fix it.</p>
+    </div>
+  )
+
+  return (
+    <div style={{ marginTop: '24px' }}>
+      {!open ? (
+        <div style={{ textAlign: 'center' }}>
+          <button
+            onClick={() => setOpen(true)}
+            style={{ fontSize: '13px', color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+          >
+            Report an error with this coin
+          </button>
+        </div>
+      ) : (
+        <div style={{ backgroundColor: '#111118', border: '1px solid #1E1E2E', borderRadius: '12px', padding: '16px' }}>
+          <p style={{ fontSize: '11px', color: '#94A3B8', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Report an Error</p>
+          <textarea
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            placeholder="What's wrong? (e.g. incorrect silver content, wrong years, missing mint mark)"
+            rows={3}
+            style={{
+              width: '100%',
+              backgroundColor: '#0A0A0F',
+              border: '1px solid #1E1E2E',
+              borderRadius: '8px',
+              padding: '10px',
+              color: '#E2E8F0',
+              fontSize: '13px',
+              fontFamily: 'system-ui, sans-serif',
+              resize: 'vertical',
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
+            <button
+              onClick={() => setOpen(false)}
+              style={{ fontSize: '12px', color: '#475569', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={sending}
+              style={{
+                fontSize: '12px', color: '#0A0A0F', backgroundColor: '#F59E0B',
+                border: 'none', borderRadius: '6px', padding: '6px 14px',
+                cursor: 'pointer', fontWeight: '600'
+              }}
+            >
+              {sending ? 'Sending...' : 'Send Report'}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function CoinPage() {
   const params = useParams()
   const id = params.id as string
@@ -84,7 +170,7 @@ export default function CoinPage() {
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)` }} />
           <p style={{ fontSize: '10px', color: '#94A3B8', margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Melt Value</p>
           <p style={{ fontSize: '40px', fontWeight: '700', color: accentColor, margin: '0 0 6px', lineHeight: 1 }}>
-            {getMeltValue() && parseFloat(getMeltValue()!) > 0 ? `$${getMeltValue()}` : 'Loading...'}
+            {!prices ? 'Loading...' : parseFloat(getMeltValue() || '0') > 0 ? `$${getMeltValue()}` : 'No precious metal content'}
           </p>
         </div>
 
@@ -117,7 +203,7 @@ export default function CoinPage() {
           </div>
         )}
 
-        {/* Specs */}
+     {/* Specs */}
         {(coin.weight > 0 || coin.diameter > 0) && (
           <div style={{ backgroundColor: '#111118', border: '1px solid #1E1E2E', borderRadius: '12px', padding: '16px' }}>
             <p style={{ fontSize: '10px', color: '#94A3B8', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Specifications</p>
@@ -135,6 +221,10 @@ export default function CoinPage() {
             )}
           </div>
         )}
+
+       {/* Report Error */}
+<ReportError coinName={coin!.name} />
+
       </main>
 
       <footer style={{ borderTop: '1px solid #1E1E2E', padding: '16px 24px', marginTop: '32px' }}>
