@@ -58,7 +58,7 @@ useEffect(() => {
     <div style={{ minHeight: '100vh', backgroundColor: '#0A0A0F', color: '#E2E8F0', fontFamily: 'system-ui, sans-serif' }}>
 
       {/* Header */}
-      <header style={{ borderBottom: '1px solid #1E1E2E', padding: '0 24px', paddingTop: 'env(safe-area-inset-top)' }}>
+      <header style={{ borderBottom: '1px solid #1E1E2E', paddingTop: 'env(safe-area-inset-top)', paddingLeft: '24px', paddingRight: '24px', paddingBottom: 0 }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '56px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #FCD34D, #D97706)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 'bold', color: '#1a1000', boxShadow: '0 0 10px rgba(245,158,11,0.4)' }}>CM</div>
