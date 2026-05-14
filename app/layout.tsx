@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
-import Script from 'next/script'
 
 export const viewport: Viewport = {
   viewportFit: 'cover',
@@ -24,12 +23,17 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9151066365323121"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            if (!window.navigator.userAgent.includes('Capacitor')) {
+              var s = document.createElement('script');
+              s.async = true;
+              s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9151066365323121';
+              s.crossOrigin = 'anonymous';
+              document.head.appendChild(s);
+            }
+          `
+        }} />
       </head>
       <body>{children}</body>
     </html>
