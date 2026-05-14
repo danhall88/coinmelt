@@ -12,12 +12,14 @@ const DEV_PRICES = {
   cached: true
 }
 
-const CACHE_DURATION = 12 * 60 * 60 * 1000 // 12 hours = 2 calls per day
+const CACHE_DURATION = 12 * 60 * 60 * 1000
 
 export async function GET() {
   if (process.env.NODE_ENV === 'development') {
     return Response.json(DEV_PRICES)
   }
+
+  let cachedData: any = null
 
   try {
     const { data, error } = await supabase
@@ -27,6 +29,7 @@ export async function GET() {
       .single()
 
     if (!error && data && data.gold > 0) {
+      cachedData = data
       const lastUpdated = new Date(data.updated_at).getTime()
       const now = Date.now()
 
@@ -52,20 +55,29 @@ export async function GET() {
     const goldData = await goldRes.json()
     const silverData = await silverRes.json()
 
+    if (!goldData.price || !silverData.price) {
+      if (cachedData) {
+        return Response.json({
+          gold: cachedData.gold,
+          silver: cachedData.silver,
+          timestamp: cachedData.updated_at,
+          cached: true,
+          stale: true
+        })
+      }
+      return Response.json({ error: 'API quota exceeded' }, { status: 503 })
+    }
+
     const prices = {
       gold: goldData.price,
       silver: silverData.price,
       updated_at: new Date().toISOString()
     }
 
-    const { error: updateError } = await supabase
+    await supabase
       .from('metal_prices')
       .update(prices)
       .eq('id', 1)
-
-    if (updateError) {
-      console.error('Supabase update error:', JSON.stringify(updateError))
-    }
 
     return Response.json({
       gold: prices.gold,
@@ -75,6 +87,15 @@ export async function GET() {
     })
 
   } catch (error: any) {
+    if (cachedData) {
+      return Response.json({
+        gold: cachedData.gold,
+        silver: cachedData.silver,
+        timestamp: cachedData.updated_at,
+        cached: true,
+        stale: true
+      })
+    }
     return Response.json({ error: error.message }, { status: 500 })
   }
 }
