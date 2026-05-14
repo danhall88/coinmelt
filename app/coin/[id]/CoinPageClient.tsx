@@ -100,8 +100,8 @@ export default function CoinPageClient({ coin }: { coin: any }) {
   function getMeltValue() {
     if (!prices) return null
     let value = 0
-    if (coin.composition.silver) value += coin.composition.silver * prices.silver
-    if (coin.composition.gold) value += coin.composition.gold * prices.gold
+if (coin.composition.silver) value += coin.composition.silver * (prices.silver ?? 0)
+if (coin.composition.gold) value += coin.composition.gold * (prices.gold ?? 0)
     return value.toFixed(2)
   }
 
@@ -122,12 +122,12 @@ export default function CoinPageClient({ coin }: { coin: any }) {
             <div style={{ display: 'flex', gap: '12px' }}>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '10px', color: '#94A3B8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Gold</div>
-                <div style={{ fontSize: '13px', color: '#F59E0B', fontWeight: '600' }}>${prices.gold.toFixed(2)}</div>
+                <div style={{ fontSize: '13px', color: '#F59E0B', fontWeight: '600' }}>${prices.gold?.toFixed(2) ?? '--'}</div>
               </div>
               <div style={{ width: '1px', backgroundColor: '#1E1E2E' }} />
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '10px', color: '#94A3B8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Silver</div>
-                <div style={{ fontSize: '13px', color: '#94A3B8', fontWeight: '600' }}>${prices.silver.toFixed(2)}</div>
+                <div style={{ fontSize: '13px', color: '#94A3B8', fontWeight: '600' }}>${prices.silver?.toFixed(2) ?? '--'}</div>
               </div>
             </div>
           )}
