@@ -1,9 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  'https://ydeefthplqrdmcityonq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkZWVmdGhwbHFyZG1jaXR5b25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NTYwNTUsImV4cCI6MjA5MzUzMjA1NX0.V-IaNzw3W9JfFgwMB27GVzBYJzd1ZwtdCtNMx8_8pK0'
-)
+export const revalidate = 43200 // 12 hours
 
 const DEV_PRICES = {
   gold: 4541.85,
@@ -12,37 +7,12 @@ const DEV_PRICES = {
   cached: true
 }
 
-const CACHE_DURATION = 12 * 60 * 60 * 1000
-
 export async function GET() {
   if (process.env.NODE_ENV === 'development') {
     return Response.json(DEV_PRICES)
   }
 
-  let cachedData: any = null
-
   try {
-    const { data, error } = await supabase
-      .from('metal_prices')
-      .select('*')
-      .eq('id', 1)
-      .single()
-
-    if (!error && data && data.gold > 0) {
-      cachedData = data
-      const lastUpdated = new Date(data.updated_at).getTime()
-      const now = Date.now()
-
-      if ((now - lastUpdated) < CACHE_DURATION) {
-        return Response.json({
-          gold: data.gold,
-          silver: data.silver,
-          timestamp: data.updated_at,
-          cached: true
-        })
-      }
-    }
-
     const [goldRes, silverRes] = await Promise.all([
       fetch('https://www.goldapi.io/api/XAU/USD', {
         headers: { 'x-access-token': 'goldapi-8a44ca45c2bbb5b3c14107faa7e65bd2-io' }
@@ -56,46 +26,16 @@ export async function GET() {
     const silverData = await silverRes.json()
 
     if (!goldData.price || !silverData.price) {
-      if (cachedData) {
-        return Response.json({
-          gold: cachedData.gold,
-          silver: cachedData.silver,
-          timestamp: cachedData.updated_at,
-          cached: true,
-          stale: true
-        })
-      }
       return Response.json({ error: 'API quota exceeded' }, { status: 503 })
     }
 
-    const prices = {
+    return Response.json({
       gold: goldData.price,
       silver: silverData.price,
-      updated_at: new Date().toISOString()
-    }
-
-    await supabase
-      .from('metal_prices')
-      .update(prices)
-      .eq('id', 1)
-
-    return Response.json({
-      gold: prices.gold,
-      silver: prices.silver,
-      timestamp: prices.updated_at,
+      timestamp: new Date().toISOString(),
       cached: false
     })
-
   } catch (error: any) {
-    if (cachedData) {
-      return Response.json({
-        gold: cachedData.gold,
-        silver: cachedData.silver,
-        timestamp: cachedData.updated_at,
-        cached: true,
-        stale: true
-      })
-    }
     return Response.json({ error: error.message }, { status: 500 })
   }
 }
