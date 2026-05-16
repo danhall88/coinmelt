@@ -1,34 +1,15 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import './globals.css'
-import AdSense from './components/AdSense'
-
-export const viewport: Viewport = {
-  viewportFit: 'cover',
-}
 
 export const metadata: Metadata = {
-  title: {
-    default: 'CoinMelt — Instant Coin Melt Value Calculator',
-    template: '%s — CoinMelt',
-  },
-  description: 'Calculate the melt value of any coin instantly. Live gold and silver prices for US and world coins.',
-  metadataBase: new URL('https://coinmelt.app'),
+  title: 'ICM — Incentive Compensation',
+  description: 'AI-driven comp plan management',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-      </head>
-      <body>
-        <AdSense />
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
